@@ -5,3 +5,4 @@ To find the arduino you can run:
 ls /dev/serial/by-id/ | grep arduino | xargs -I{} readlink /dev/serial/by-id/{}
 ```
 which will output `../../ttyACMX` or simmilar. Then `/dev/ttyACMX` (for example) is your arduino.
+From which you can run `cargo run > /dev/ttyACMX` to pipe the parsed video into it.
