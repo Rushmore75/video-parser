@@ -1,15 +1,5 @@
-use std::io::*;
+use std::io::{stdout, Write};
 use ffmpeg::format::Pixel;
-use rand::Rng;
-
-#[inline]
-/// Assumes a square ig
-pub fn print_raw(buf: &[u8]) {
-    let mut stdout = stdout();
-    let mut lock = stdout.lock();
-    lock.write(buf).unwrap();
-    stdout.flush().unwrap();
-}
 
 /// Must use square images
 // pub fn print_square(buf: &[u8], width_hight: usize, line) {
@@ -25,6 +15,10 @@ pub fn print_square(frame: &ffmpeg::frame::Video) {
     // How many bytes per pixel RGBA
     let linesize = unsafe { std::ptr::addr_of!((*frame.as_ptr()).linesize) };
     let step = (unsafe { *linesize })[z] as usize;
+    
+    let mut stdout = stdout();
+    let mut lock = stdout.lock();
+
     // (Assuming square) Step thru buffer.
     for i in 0..size {
         let j = i*step;
@@ -34,7 +28,11 @@ pub fn print_square(frame: &ffmpeg::frame::Video) {
         let slice = &pre_slice[0..size*3];
         // let lol = &buf[j..j+step][0..size*3];
 
-        println!("{:?} || {}-{}", slice, j, j+step);
+        // DEBUG
+        // println!("{:?} || {}-{}", slice, j, j+step);
+        // NORMAL
+        lock.write(slice).unwrap();
     }
+    stdout.flush().unwrap();
 }
 
