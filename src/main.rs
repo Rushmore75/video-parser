@@ -1,3 +1,5 @@
+#![feature(iter_array_chunks)]
+
 extern crate ffmpeg_next as ffmpeg;
 
 use anyhow::Error;
@@ -6,7 +8,7 @@ use ffmpeg::media::Type;
 use ffmpeg::software::scaling::{context::Context, flag::Flags};
 use ffmpeg::util::frame::video::Video;
 use std::path::Path;
-mod test;
+mod out;
 
 fn main() -> Result<(), Error> {
 
@@ -14,7 +16,7 @@ fn main() -> Result<(), Error> {
     ffmpeg::init()?;
 
     // read the input file
-    if let Ok(mut ictx) = input(&Path::new("input")) {
+    if let Ok(mut ictx) = input(&Path::new("rgb.png")) {
 
         let input = ictx
             .streams()
@@ -48,7 +50,7 @@ fn main() -> Result<(), Error> {
 
                     // test::print_raw(&rgb_frame.data(0));
                     // test::print_square(&rgb_frame.data(0), rgb_frame.width() as usize);
-                    test::print_square(&rgb_frame);
+                    out::print_square(&rgb_frame, out::LinesFormat::RightLeft);
                     // test::small_matrix();
                 }
                 Ok(())
